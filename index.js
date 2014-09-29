@@ -2,6 +2,11 @@ var app = require('http').createServer(handler);
 var fs = require('fs');
 var url = require('url');
 
+var config = require('./config');
+var database = require('./database');
+
+database.init();
+
 app.listen(1299);
 
 function handler (req, res) {
