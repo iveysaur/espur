@@ -1,10 +1,15 @@
 var app = require('http').createServer(handler);
 var fs = require('fs');
+var url = require('url');
 
 app.listen(1299);
 
 function handler (req, res) {
-	fs.readFile(__dirname + '/index.html',
+	var path = url.parse(req.url).pathname;
+	if(path == '/') {
+		path = 'index.html';
+	}
+	fs.readFile(__dirname + '/' + path,
 		function (err, data) {
 			if (err) {
 				res.writeHead(500);
