@@ -5,3 +5,10 @@ function createLogin(username, password, email) {
 	xhr.send(JSON.stringify({username: username, password: password, email: email}));
 }
 
+function login(username, password) {
+	var xhr = new XMLHttpRequest();
+
+	xhr.open('POST', '/api/login');
+	xhr.send(JSON.stringify({username: username, password: password}));
+}
+

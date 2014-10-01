@@ -1,8 +1,9 @@
 <script src="front.js"></script>
 
-<h1>Login</h1>
-<form method="post" onsubmit="login(username.value, pass.value); return false;">
+<h1>Create Account</h1>
+<form method="post" onsubmit="createLogin(username.value, pass.value, email.value); return false;">
 	<label>Username: </label><input type="text" name="username"><br>
 	<label>Password: </label><input type="password" name="pass"><br>
+	<label>Email: </label><input type="text" name="email"><br>
 	<input type="submit" value="Submit">
 </form>

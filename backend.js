@@ -33,8 +33,20 @@ function handler (req, res) {
 	});
 	req.on('end', function () {
 		try {
+			path = url.parse(req.url).pathname;
 			data = JSON.parse(body);
-			database.query("INSERT INTO users (username, email, password) VALUES ('" + database.escape(data.username) + "','" + database.escape(data.email) + "','" + database.escape(data.password) + "')");
+			switch (path) {
+				case '/api/create' :
+					database.query("INSERT INTO users (username, email, password) VALUES ('" + database.escape(data.username) + "','" + database.escape(data.email) + "','" + database.escape(data.password) + "')");
+				return;
+				case '/api/login' :
+					database.query("SELECT username FROM users WHERE username = '" + database.escape(data.username) + "' AND password = '" + database.escape(data.password) + "'", function(err, rows) {
+						if (rows.length > 0) {
+							console.log(rows);
+						}
+					});
+				return;
+			}
 		} catch (e) {}
 	});
 }
