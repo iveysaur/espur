@@ -47,3 +47,7 @@ exports.query = function(query, callback, args) {
 		}
 	}
 }
+
+exports.escape = function (string) {
+	return connection.escapeSync(string);
+}
