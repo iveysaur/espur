@@ -14,15 +14,18 @@ function handler (req, res) {
 	if(path == '/') {
 		path = 'index.html';
 	}
-	fs.readFile(__dirname + '/' + path,
-		function (err, data) {
-			if (err) {
-				res.writeHead(500);
-				return res.end('Error loading index.html');
-			}
-			res.writeHead(200);
-			res.end(data);
-	});
+	pathFirst = path.split('/')[1];
+	if (pathFirst != 'api') {
+		fs.readFile(__dirname + '/' + path,
+			function (err, data) {
+				if (err) {
+					res.writeHead(500);
+					return res.end('Error loading ' + path);
+				}
+				res.writeHead(200);
+				res.end(data);
+		});
+	}
 
 	var body = '';
 	req.on('data', function (data) {
@@ -43,6 +46,8 @@ function handler (req, res) {
 					database.query("SELECT username FROM users WHERE username = '" + database.escape(data.username) + "' AND password = '" + database.escape(data.password) + "'", function(err, rows) {
 						if (rows.length > 0) {
 							console.log(rows);
+							res.write("success");
+							res.end();
 						}
 					});
 				return;
