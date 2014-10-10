@@ -1,6 +1,18 @@
 function createLogin(username, password, email) {
 	var xhr = new XMLHttpRequest();
 
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4) {
+			console.log(xhr.responseText);
+			switch (xhr.responseText) {
+				case "good":
+					location.href = "index.html";
+					break;
+				default:
+					break;
+			}
+		}
+	}
 	xhr.open('POST', '/api/create');
 	xhr.send(JSON.stringify({username: username, password: password, email: email}));
 }

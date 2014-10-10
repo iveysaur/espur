@@ -40,7 +40,13 @@ function handler (req, res) {
 			data = JSON.parse(body);
 			switch (path) {
 				case '/api/create' :
-					database.query("INSERT INTO users (username, email, password) VALUES ('" + database.escape(data.username) + "','" + database.escape(data.email) + "','" + database.escape(data.password) + "')");
+					database.query("SELECT username FROM users WHERE username = '" + database.escape(data.username) + "'", function(err, rows) {
+						if (rows.length == 0) {
+							database.query("INSERT INTO users (username, email, password) VALUES ('" + database.escape(data.username) + "','" + database.escape(data.email) + "','" + database.escape(data.password) + "')");
+							res.write("good");
+						}
+						res.end();
+					});
 				return;
 				case '/api/login' :
 					database.query("SELECT username FROM users WHERE username = '" + database.escape(data.username) + "' AND password = '" + database.escape(data.password) + "'", function(err, rows) {
