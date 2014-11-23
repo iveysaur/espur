@@ -27,6 +27,7 @@ function handler (req, res) {
 		});
 	}
 
+	console.log("request: " + req.url);
 	var body = '';
 	req.on('data', function (data) {
 		body += data.toString();
@@ -43,7 +44,10 @@ function handler (req, res) {
 					database.query("SELECT username FROM users WHERE username = '" + database.escape(data.username) + "'", function(err, rows) {
 						if (rows.length == 0) {
 							database.query("INSERT INTO users (username, email, password) VALUES ('" + database.escape(data.username) + "','" + database.escape(data.email) + "','" + database.escape(data.password) + "')");
-							res.write("good");
+							res.write("success");
+						}
+						else {
+							res.write("nope");
 						}
 						res.end();
 					});
@@ -53,12 +57,19 @@ function handler (req, res) {
 						if (rows.length > 0) {
 							console.log(rows);
 							res.write("success");
-							res.end();
 						}
+						else {
+							res.write("nope");
+						}
+						res.end();
 					});
 				return;
 			}
-		} catch (e) {}
+		} catch (e) {
+			console.log(e);
+			res.writeHead(500);
+			res.end();
+		}
 	});
 }
 
