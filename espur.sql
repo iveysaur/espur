@@ -27,7 +27,7 @@ CREATE TABLE `answers` (
   `categoryid` int(11) DEFAULT NULL,
   `answer` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -36,6 +36,7 @@ CREATE TABLE `answers` (
 
 LOCK TABLES `answers` WRITE;
 /*!40000 ALTER TABLE `answers` DISABLE KEYS */;
+INSERT INTO `answers` VALUES (1,1,'Spotting some choice booty'),(2,1,'Finding out you’re pregnant'),(3,1,'Seeing your crush'),(4,1,'Pumpkin Spice Latte is back'),(5,1,'Feeling gassy'),(6,2,'Seeing your arch enemy'),(7,2,'Pumpkin Spice is banned by the FTC'),(8,2,'Checking if you put on deodorant'),(9,2,'Miley Cyrus comes on the radio');
 /*!40000 ALTER TABLE `answers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -74,4 +75,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-11-23 15:20:22
+-- Dump completed on 2014-11-23 15:24:57
