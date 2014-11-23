@@ -4,6 +4,7 @@ var url = require('url');
 
 var config = require('./config');
 var database = require('./database');
+var upload = require('./upload');
 
 database.init();
 
@@ -55,6 +56,12 @@ function handler (req, res) {
 							res.write("success");
 							res.end();
 						}
+					});
+				return;
+				case '/api/upload' :
+					upload.upload(body, function(err, file) {
+						res.write(file);
+						res.end();
 					});
 				return;
 			}
