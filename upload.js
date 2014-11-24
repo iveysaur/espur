@@ -1,3 +1,5 @@
+var fs = require("fs");
+
 exports.uploadFile = function (data, callback) {
 	var tmpfile = "./images/" + (new Date).getTime() + ".jpg";
 

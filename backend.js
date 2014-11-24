@@ -2,11 +2,10 @@ var app = require('http').createServer(handler);
 var fs = require('fs');
 var url = require('url');
 
-var upload = require('./upload');
-var api = require('./api');
-
 var database = require('./database');
 database.init();
+
+var api = require('./api');
 
 app.listen(1299);
 
