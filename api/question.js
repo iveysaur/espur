@@ -13,6 +13,45 @@ exports.get_answer = function(request, response, args, body, callback) {
 	database.query("SELECT * FROM answers WHERE categoryid = " + rnd + " ORDER BY RAND() LIMIT 1", callback);
 }
 
+// Rapid prototype
+// Definitely needs some optimizations, i.e. not using ORDER BY RAND(),
+// and combining the queries into one or two. But it'll work for the testing phase.
+exports.get_question = function(request, response, args, body, callback) {
+	database.query("SELECT * FROM entries ORDER BY RAND() LIMIT 1", function (err, rows) {
+		if (err) return callback(err);
+
+		var entry = rows[0];
+		var answerid = ~~entry.answerid;
+
+		database.query("SELECT * FROM answers WHERE id = " + answerid, function (err, rows) {
+			if (err) return callback(err);
+
+			var answer = rows[0];
+			var categoryid = ~~answer.categoryid;
+
+			database.query("SELECT * FROM answers WHERE categoryid = " + categoryid + " ORDER BY RAND() LIMIT 3", function (err, rows) {
+				if (err) return callback(err);
+
+				var results = rows[0];
+				results.push(answer);
+				shuffleArray(results);
+
+				callback(null, { id: entry.id, answers: results });
+			});
+		});
+	});
+}
+
+function shuffleArray(array) {
+	for (var i = 1; i < array.length; i++) {
+		if (Math.random() > 0.5) {
+			var tmp = array[i-1];
+			array[i-1] = array[i];
+			array[i] = tmp;
+		}
+	}
+}
+
 exports.post_upload = function(request, response, args, body, callback) {
 	var answerid = ~~args[2];
 	var public = ~~args[3];
