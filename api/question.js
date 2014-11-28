@@ -42,16 +42,6 @@ exports.get_question = function(request, response, args, body, callback) {
 	});
 }
 
-function shuffleArray(array) {
-	for (var i = 1; i < array.length; i++) {
-		if (Math.random() > 0.5) {
-			var tmp = array[i-1];
-			array[i-1] = array[i];
-			array[i] = tmp;
-		}
-	}
-}
-
 exports.post_upload = function(request, response, args, body, callback) {
 	var answerid = ~~args[2];
 	var public = ~~args[3];
@@ -69,5 +59,15 @@ function addQuestion(answerid, file, public) {
 		if (err)
 			console.log(err);
 	});
+}
+
+// Fisher-Yates shuffle
+function shuffleArray(array) {
+	for (var i = 1; i < array.length; i++) {
+		var j = Math.floor(Math.random() * array.length);
+		var tmp = array[i];
+		array[i] = array[j];
+		array[j] = tmp;
+	}
 }
 
