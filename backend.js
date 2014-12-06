@@ -6,6 +6,7 @@ var database = require('./database');
 database.init();
 
 var api = require('./api');
+var index = require('./index');
 
 app.listen(1299);
 
@@ -13,7 +14,7 @@ function handler (req, res) {
 	var path = url.parse(req.url).pathname;
 
 	if (path == '/') {
-		return doIndex(res);
+		return index(res);
 	}
 
 	var body = '';
