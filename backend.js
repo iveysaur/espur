@@ -11,21 +11,9 @@ app.listen(1299);
 
 function handler (req, res) {
 	var path = url.parse(req.url).pathname;
-	if(path == '/') {
-		path = 'index.html';
-	}
-	pathFirst = path.split('/')[1];
-	if (pathFirst != 'api') {
-		fs.readFile(__dirname + '/' + path,
-			function (err, data) {
-				if (err) {
-					res.writeHead(500);
-					return res.end('Error loading ' + path);
-				}
-				res.writeHead(200);
-				res.end(data);
-		});
-		return;
+
+	if (path == '/') {
+		return doIndex(res);
 	}
 
 	var body = '';
