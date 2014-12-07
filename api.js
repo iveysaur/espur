@@ -28,11 +28,14 @@ module.exports = function (request, response, body) {
 	var method = request.method.toLowerCase();
 
 	if (endpoints[args[0]] && endpoints[args[0]][method + "_" + args[1]]) {
-		endpoints[args[0]][method + "_" + args[1]](request, response, args, body, function (err, result) {
+		endpoints[args[0]][method + "_" + args[1]](request, response, args, body, function (err, result, headers) {
 			if (err) {
 				response.writeHead(500);
 				response.end(JSON.stringify(err));
 			} else {
+				response.writeHead(200, headers || {
+					"Cache-Control": "no-cache"
+				});
 				response.end(JSON.stringify(result));
 			}
 		});

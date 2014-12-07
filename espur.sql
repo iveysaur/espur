@@ -41,6 +41,32 @@ INSERT INTO `answers` VALUES (1,1,'Spotting some choice booty'),(2,1,'Finding ou
 UNLOCK TABLES;
 
 --
+-- Table structure for table `entries`
+--
+
+DROP TABLE IF EXISTS `entries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `entries` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `userid` int(11) DEFAULT NULL,
+  `file` varchar(255) DEFAULT NULL,
+  `answerid` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `entries`
+--
+
+LOCK TABLES `entries` WRITE;
+/*!40000 ALTER TABLE `entries` DISABLE KEYS */;
+INSERT INTO `entries` VALUES (1,NULL,'./images/1416868024766.jpg',2);
+/*!40000 ALTER TABLE `entries` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 
@@ -53,6 +79,7 @@ CREATE TABLE `users` (
   `password` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `ip` varchar(64) DEFAULT NULL,
+  `authkey` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -75,4 +102,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-11-23 15:24:57
+-- Dump completed on 2014-12-06 21:21:38
