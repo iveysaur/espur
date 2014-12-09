@@ -11,7 +11,9 @@ module.exports = function (request, response, body) {
 	var path = url.parse(request.url).pathname;
 	var args = path.split("/");
 	var method = request.method.toLowerCase();
-	var sessionid = request.headers["x-x"];
+	var sessionid = request.headers["x-x"] || "";
+	console.log(sessionid);
+	console.log(request.headers);
 
 	if (args[1] != "api")
 		return do404(response);
@@ -54,10 +56,12 @@ module.exports = function (request, response, body) {
 	}
 
 	if (endpoint = endpoints[args[0]][method + "_" + args[1]]) {
-		User.verifyAuth(sessionid.split(',')[0], sessionid, function(success, userobj) {
+		var s = sessionid.split(',');
+		User.verifyAuth(s[0], s[1], function(success, userobj) {
 			if (success) {
 				endpoint(request, response, args, json, callback);
 			} else {
+				console.log("Auth failed: " + sessionid);
 				do404(response);
 			}
 		});
