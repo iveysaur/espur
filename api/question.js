@@ -32,7 +32,7 @@ exports.get_question = function(request, response, args, body, callback) {
 			database.query("SELECT * FROM answers WHERE categoryid = " + categoryid + " ORDER BY RAND() LIMIT 3", function (err, rows) {
 				if (err) return callback(err);
 
-				var results = rows[0];
+				var results = rows;
 				results.push(answer);
 				shuffleArray(results);
 

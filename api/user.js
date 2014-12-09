@@ -1,21 +1,24 @@
 var database = require('../database');
-var bcrypt = require('bcrypt');
-var crypto = require("crypto");
+var bcrypt = require('bcryptjs');
 
-exports.post_create = function(request, response, args, body, callback) {
+var User = require('../user');
+
+exports.public_post_create = function(request, response, args, body, callback) {
+	if (!User.validUsername(body.username))
+		return callback(400, false);
+
 	database.query("SELECT username FROM users WHERE username = '" + database.escape(body.username) + "'", function(err, rows) {
 		if (rows.length != 0) return callback(null, false);
-		generatePass(body.password, function(err, password) {
-			var authkey = generateAuthkey(body.username);
+		User.generatePass(body.password, function(err, password) {
+			var authkey = User.generateAuthkey(body.username);
 
-			database.query("INSERT INTO users (username, email, password) VALUES ('" + database.escape(body.username) + "','" + database.escape(body.email) + "','" + password + "','" + database.escape(authkey) + "')");
+			database.query("INSERT INTO users (username, email, password, authkey) VALUES ('" + database.escape(body.username) + "','" + database.escape(body.email) + "','" + password + "','" + database.escape(authkey) + "')");
 			callback(null, true);
 		});
-	res.end();
 	});
 }
 
-exports.post_login = function(request, response, args, body, callback) {
+exports.public_post_login = function(request, response, args, body, callback) {
 	database.query("SELECT id,password,authkey FROM users WHERE username = '" + database.escape(body.username) + "'", function(err, rows) {
 		bcrypt.compare(body.password, rows[0].password, function(err,match) {
 			if (err || !match)
@@ -27,13 +30,5 @@ exports.post_login = function(request, response, args, body, callback) {
 			});
 		});
 	});
-}
-
-function generatePass(password, callback) {
-	bcrypt.hash(pass, 11, callback);
-}
-
-exports.generateAuthkey = function(user) {
-	return user.toString() + crypto.randomBytes(20).toString("hex");
 }
 

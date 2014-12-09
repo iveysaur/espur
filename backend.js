@@ -29,6 +29,8 @@ function handler (req, res) {
 			api(req, res, body);
 		} catch (e) {
 			console.log(e);
+			console.log(e.stack);
+			console.trace();
 			res.writeHead(500);
 			res.end();
 		}
