@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^0.8.0",
-    "frisby": "^0.8.3",
+    "hippie": "^0.3.0",
     "jasmine": "^2.1.1",
     "mysql-libmysqlclient": "^1.6.0"
   }

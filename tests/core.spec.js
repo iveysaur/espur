@@ -1,61 +1,80 @@
-var frisby = require("frisby");
-
-var URL = "http://localhost:1299/";
-var API = URL + "api/";
+var hippie = require('hippie');
 
 var authkey = "";
 
-function frisbyAuth(description) {
-	var c = frisby.create(description);
-	c.current.request = { headers: { 'x-x': authkey, 'x-test': description }};
-	return c;
+function api() {
+  return hippie()
+    .json()
+    .base('http://localhost:1299/api/')
+	.header('x-x', authkey);
+}
+
+function expectStructure(body, structure) {
+	for (key in structure) {
+		if (typeof body[key] != structure[key])
+			return new Error(key + " is a " + (typeof body[key]) + ", not a " + structure[key]);
+	}
 }
 
 describe("User signup", function() {
-	frisby.create("Create a new user with valid data")
-		.post(API + "user/create", {
-			username: "joe",
-			password: "test",
-			email: "jaxbot@gmail.com"
-		}, { json: true })
-		.expectStatus(200)
-		.toss();
+	it("should create a new user with valid data", function(done) {
+		api()
+			.post("user/create")
+			.send({
+				username: "joe",
+				password: "test",
+				email: "jaxbot@gmail.com"
+			})
+			.expectStatus(200)
+			.end(done)
+	});
 });
 
 describe("User signin", function() {
-	it("Should sign in successfully", function(done) {
-		frisby.create("Sign in as test user we just created")
-			.post(API + "user/login", {
+	it("should sign in successfully", function(done) {
+		api()
+			.post("user/login")
+			.send({
 				username: "joe",
 				password: "test",
-			}, { json: true })
-			.expectStatus(200)
-			.after(function(err, res, body) {
-				authkey = body;
-				frisbyAuth("Get answer using new authkey")
-					.get(API + "question/answer")
-					.expectStatus(200)
-					.after(function(err, res, body) {
-						console.log(body);
-					})
-				.toss();
 			})
-			.toss();
-		done();
+			.expectStatus(200)
+			.expect(function(res, body, next) {
+				authkey = body;
+				next();
+			})
+			.end(done);
 	});
 });
 
 describe("Getting questions from API", function() {
-	it("Should get valid answer objects", function() {
-		frisbyAuth("Get valid answer object")
-			.get(API + "question/answer")
+	it("should get valid answer objects", function(done) {
+		api()
+			.get("question/answer")
 			.expectStatus(200)
-			.expectJSONTypes('0', {
-				answer: String,
-				id: Number,
-				categoryid: Number
+			.expect(function(res, body, next) {
+				next(expectStructure(body[0], {
+					id: "number",
+					categoryid: "number",
+					answer: "string"
+				}));
 			})
-			.toss();
+			.expect(function(res, body, next) {
+				var err = null;
+
+				if (!Array.isArray(body))
+					err = new Error("Did not get array from server");
+
+				next(err);
+			})
+			.end(done);
+	});
+	it("should not work if unauthenticated", function(done) {
+		api()
+			.header('x-x', '')
+			.get("question/answer")
+			.expectStatus(404)
+			.end(done);
 	});
 });
 
