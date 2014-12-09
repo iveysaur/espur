@@ -1,12 +1,13 @@
 var hippie = require('hippie');
+var fs = require('fs');
 
 var authkey = "";
 
 function api() {
-  return hippie()
-    .json()
-    .base('http://localhost:1299/api/')
-	.header('x-x', authkey);
+	return hippie()
+		.json()
+		.base('http://localhost:1299/api/')
+		.header('x-x', authkey);
 }
 
 function expectStructure(body, structure) {
@@ -14,6 +15,7 @@ function expectStructure(body, structure) {
 		if (typeof body[key] != structure[key])
 			return new Error(key + " is a " + (typeof body[key]) + ", not a " + structure[key]);
 	}
+	return null;
 }
 
 describe("User signup", function() {
@@ -73,6 +75,46 @@ describe("Getting questions from API", function() {
 		api()
 			.header('x-x', '')
 			.get("question/answer")
+			.expectStatus(404)
+			.end(done);
+	});
+
+	it("should get valid question objects", function(done) {
+		api()
+			.get("question/question")
+			.expectStatus(200)
+			.expect(function(res, body, next) {
+				expect(Array.isArray(body.answers)).toBe(true);
+				body.answers.forEach(function(answer) {
+					expect(expectStructure(answer, {
+						id: "number",
+						categoryid: "number",
+						answer: "string"
+					})).toBe(null);
+				});
+				next();
+			})
+			.end(function(err, res, body) {
+				console.log(body);
+				done();
+			});
+	});
+});
+
+describe("Posting an entry", function() {
+	var imageData = fs.readFileSync(__dirname + "/test.jpg", "base64");
+	it("should be able to upload a selfie", function(done) {
+		api()
+			.post("question/upload/1/1")
+			.send(imageData)
+			.expectStatus(200)
+			.end(done);
+	});
+
+	it("should not work if unauthenticated", function(done) {
+		api()
+			.header('x-x', '')
+			.post("question/upload/1/1")
 			.expectStatus(404)
 			.end(done);
 	});
