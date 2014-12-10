@@ -8,7 +8,7 @@ database.query("SELECT COUNT(DISTINCT categoryid) FROM answers", function(err, r
 	numCategories = rows[0]["COUNT(DISTINCT categoryid)"] - 1;
 });
 
-exports.get_answer = function(request, response, args, body, callback) {
+exports.get_answer = function(req, body, callback) {
 	var rnd = Math.round(Math.random() * numCategories) + 1;
 	database.query("SELECT * FROM answers WHERE categoryid = " + rnd + " ORDER BY RAND() LIMIT 1", callback);
 }
@@ -16,7 +16,7 @@ exports.get_answer = function(request, response, args, body, callback) {
 // Rapid prototype
 // Definitely needs some optimizations, i.e. not using ORDER BY RAND(),
 // and combining the queries into one or two. But it'll work for the testing phase.
-exports.get_question = function(request, response, args, body, callback) {
+exports.get_question = function(req, body, callback) {
 	database.query("SELECT * FROM entries ORDER BY RAND() LIMIT 1", function (err, rows) {
 		if (err) return callback(err);
 
@@ -42,11 +42,11 @@ exports.get_question = function(request, response, args, body, callback) {
 	});
 }
 
-exports.post_upload = function(request, response, args, body, callback) {
-	var answerid = ~~args[2];
-	var public = ~~args[3];
+exports.post_upload = function(req, body, callback) {
+	var answerid = ~~req.args[2];
+	var public = ~~req.args[3];
 
-	upload.uploadFile(body, function(err, file) {
+	upload.uploadFile(req.body, req.userobj.id, function(err, file) {
 		if (!file) return callback(null, file);
 
 		addQuestion(answerid, file, public);

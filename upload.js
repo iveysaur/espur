@@ -1,12 +1,21 @@
 var fs = require("fs");
 
-exports.uploadFile = function (data, callback) {
-	var tmpfile = "./images/" + (new Date).getTime() + ".jpg";
+var id = (new Date).getTime().toString(36) + "-";
+var increment = 0;
+
+exports.uploadFile = function (data, userid, callback) {
+	var imgid = getUniqueId(userid);
+	var tmpfile = "./images/" + imgid + ".jpg";
 
 	fs.writeFile(tmpfile, data, "base64", function(err) {
 		data = null;
 
 		if (err) callback(err);
-		callback(null, tmpfile);
+		callback(null, imgid);
 	});
 }
+
+function getUniqueId(userid) {
+	return userid + "-" + id + (increment++) + "-" + Math.random().toString(36);
+}
+

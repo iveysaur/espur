@@ -50,16 +50,20 @@ module.exports = function (request, response, body) {
 		}
 	}
 
+	request.body = body;
+	request.args = args;
+
 	var endpoint = endpoints[args[0]]['public_'+method+'_'+args[1]];
 	if (endpoint) {
-		return endpoint(request, response, args, json, callback);
+		return endpoint(request, json, callback);
 	}
 
 	if (endpoint = endpoints[args[0]][method + "_" + args[1]]) {
 		var s = sessionid.split(',');
 		User.verifyAuth(s[0], s[1], function(success, userobj) {
 			if (success) {
-				endpoint(request, response, args, json, callback);
+				request.userobj = userobj;
+				endpoint(request, json, callback);
 			} else {
 				console.log("Auth failed: " + sessionid);
 				do404(response);
