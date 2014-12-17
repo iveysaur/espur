@@ -10,7 +10,11 @@ database.query("SELECT COUNT(DISTINCT categoryid) FROM answers", function(err, r
 
 exports.get_answer = function(req, body, callback) {
 	var rnd = Math.round(Math.random() * numCategories) + 1;
-	database.query("SELECT * FROM answers WHERE categoryid = " + rnd + " ORDER BY RAND() LIMIT 1", callback);
+	database.query("SELECT * FROM answers WHERE categoryid = " + rnd + " ORDER BY RAND() LIMIT 1", function(err, rows) {
+		if (err) return callback(err, { status: 500 });
+
+		callback(null, { answer: rows[0] });
+	});
 }
 
 // Rapid prototype
@@ -50,7 +54,7 @@ exports.post_upload = function(req, body, callback) {
 		if (!file) return callback(null, file);
 
 		addQuestion(answerid, file, public);
-		callback(null, file);
+		callback(null, { file: file });
 	});
 }
 

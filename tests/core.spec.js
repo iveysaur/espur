@@ -42,7 +42,7 @@ describe("User signin", function() {
 			})
 			.expectStatus(200)
 			.expect(function(res, body, next) {
-				authkey = body;
+				authkey = body.authkey;
 				next();
 			})
 			.end(done);
@@ -55,7 +55,7 @@ describe("Getting questions from API", function() {
 			.get("question/answer")
 			.expectStatus(200)
 			.expect(function(res, body, next) {
-				next(expectStructure(body[0], {
+				next(expectStructure(body.answer, {
 					id: "number",
 					categoryid: "number",
 					answer: "string"
@@ -64,8 +64,8 @@ describe("Getting questions from API", function() {
 			.expect(function(res, body, next) {
 				var err = null;
 
-				if (!Array.isArray(body))
-					err = new Error("Did not get array from server");
+				if (!body.answer || !body.answer.id)
+					err = new Error("Did not get answer from server");
 
 				next(err);
 			})
