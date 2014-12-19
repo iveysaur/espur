@@ -13,7 +13,7 @@ exports.get_answer = function(req, body, callback) {
 	database.query("SELECT * FROM answers WHERE categoryid = " + rnd + " ORDER BY RAND() LIMIT 1", function(err, rows) {
 		if (err) return callback(err, { status: 500 });
 
-		callback(null, { answer: rows[0] });
+		callback(null, rows[0]);
 	});
 }
 
@@ -43,6 +43,14 @@ exports.get_question = function(req, body, callback) {
 				callback(null, { id: entry.id, answers: results });
 			});
 		});
+	});
+}
+
+exports.get_check = function(req, body, callback) {
+	database.query("SELECT * FROM entries WHERE id = " + ~~req.args[2], function(err, rows) {
+		if (err) return callback(err, { status: 500 });
+
+		callback(null, { correct: req.args[3] == rows[0].answerid });
 	});
 }
 
