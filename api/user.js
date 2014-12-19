@@ -12,7 +12,7 @@ exports.public_post_create = function(req, body, callback) {
 		User.generatePass(body.password, function(err, password) {
 			var authkey = User.generateAuthkey(body.username);
 
-			database.query("INSERT INTO users (username, email, password, authkey) VALUES ('" + database.escape(it.json.username) + "','" + database.escape(body.email) + "','" + password + "','" + database.escape(authkey) + "')", function(err, rows) {
+			database.query("INSERT INTO users (username, email, password, authkey) VALUES ('" + database.escape(body.username) + "','" + database.escape(body.email) + "','" + password + "','" + database.escape(authkey) + "')", function(err, rows) {
 				if (err)
 					return callback(null, { status: false });
 
