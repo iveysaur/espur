@@ -12,8 +12,9 @@ function api() {
 
 function expectStructure(body, structure) {
 	for (key in structure) {
-		if (typeof body[key] != structure[key])
-			return new Error(key + " is a " + (typeof body[key]) + ", not a " + structure[key]);
+		var type = typeof body[key];
+		if (type != structure[key])
+			return new Error(key + " is a " + (type) + ", not a " + structure[key]);
 	}
 	return null;
 }
@@ -55,7 +56,7 @@ describe("Getting questions from API", function() {
 			.get("question/answer")
 			.expectStatus(200)
 			.expect(function(res, body, next) {
-				next(expectStructure(body.answer, {
+				next(expectStructure(body, {
 					id: "number",
 					categoryid: "number",
 					answer: "string"
@@ -64,7 +65,7 @@ describe("Getting questions from API", function() {
 			.expect(function(res, body, next) {
 				var err = null;
 
-				if (!body.answer || !body.answer.id)
+				if (!body.id)
 					err = new Error("Did not get answer from server");
 
 				next(err);
@@ -95,7 +96,6 @@ describe("Getting questions from API", function() {
 				next();
 			})
 			.end(function(err, res, body) {
-				console.log(body);
 				done();
 			});
 	});
@@ -117,6 +117,50 @@ describe("Posting an entry", function() {
 			.post("question/upload/1/1")
 			.expectStatus(404)
 			.end(done);
+	});
+});
+
+describe("Checking an answer choice", function() {
+	var question = null
+
+	it("needs to get a question", function(done) {
+		api()
+			.get("question/question")
+			.expectStatus(200)
+			.end(function(err, res, body) {
+				question = body;
+				done();
+			});
+	});
+
+	it("should get false when answering wrong", function(done) {
+		var id = question.answerid + 1;
+		api()
+			.get("question/check/" + question.id + "/" + id)
+			.expectStatus(200)
+			.expect(function(res, body, next) {
+				expect(body.correct).toBe(false);
+				next();
+			})
+			.end(function(err, res, body) {
+				done();
+			});
+		done();
+	});
+
+	it("should get true when answering correctly", function(done) {
+		var id = question.answerid;
+		api()
+			.get("question/check/" + question.id + "/" + id)
+			.expectStatus(200)
+			.expect(function(res, body, next) {
+				expect(body.correct).toBe(true);
+				next();
+			})
+			.end(function(err, res, body) {
+				done();
+			});
+		done();
 	});
 });
 

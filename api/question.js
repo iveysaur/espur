@@ -40,7 +40,8 @@ exports.get_question = function(req, body, callback) {
 				results.push(answer);
 				shuffleArray(results);
 
-				callback(null, { id: entry.id, answers: results });
+				// We're passing the answerid for testing purposes
+				callback(null, { id: entry.id, answerid: answerid, answers: results });
 			});
 		});
 	});

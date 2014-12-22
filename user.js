@@ -4,6 +4,9 @@ var crypto = require("crypto");
 
 exports.verifyAuth = function(userid,authkey,callback) {
 	this.getUserProfile(userid, function(err,rows) {
+		console.log(userid);
+		console.log(err);
+		console.log(rows);
 		if (err || rows.length < 1 || !rows[0]) return callback(false);
 		callback(authkey == rows[0].authkey, rows[0]);
 	});
