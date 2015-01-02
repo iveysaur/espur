@@ -7,10 +7,10 @@ exports.uploadFile = function (data, userid, callback) {
 	var imgid = getUniqueId(userid);
 	var tmpfile = "./images/" + imgid + ".jpg";
 
-	fs.writeFile(tmpfile, data, "base64", function(err) {
-		data = null;
-
-		if (err) callback(err);
+	var stream = fs.createWriteStream(tmpfile);
+	data.resume();
+	data.pipe(stream);
+	stream.on('finish', function() {
 		callback(null, imgid);
 	});
 }

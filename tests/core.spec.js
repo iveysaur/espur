@@ -102,7 +102,7 @@ describe("Getting questions from API", function() {
 });
 
 describe("Posting an entry", function() {
-	var imageData = fs.readFileSync(__dirname + "/test.jpg", "base64");
+	var imageData = fs.readFileSync(__dirname + "/test.jpg");
 	it("should be able to upload a selfie", function(done) {
 		api()
 			.post("question/upload/1/1")

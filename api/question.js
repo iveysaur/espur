@@ -59,7 +59,7 @@ exports.post_upload = function(req, body, callback) {
 	var answerid = ~~req.args[2];
 	var public = ~~req.args[3];
 
-	upload.uploadFile(req.body, req.userobj.id, function(err, file) {
+	upload.uploadFile(req, req.userobj.id, function(err, file) {
 		if (!file) return callback(null, file);
 
 		addQuestion(answerid, file, public);
