@@ -24,6 +24,10 @@ exports.get_question = function(req, body, callback) {
 	database.query("SELECT * FROM entries WHERE userid != " + (~~req.userobj.id) + " ORDER BY RAND() LIMIT 1", function (err, rows) {
 		if (err) return callback(err);
 
+		// No data meeting the criteria
+		if (rows.length < 1)
+			return callback(null, { id: -1 });
+
 		var entry = rows[0];
 		var answerid = ~~entry.answerid;
 
