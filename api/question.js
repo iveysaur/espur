@@ -31,6 +31,8 @@ exports.get_question = function(req, body, callback) {
 			if (err) return callback(err);
 
 			var answer = rows[0];
+			if (!answer) return callback(500);
+
 			var categoryid = ~~answer.categoryid;
 
 			database.query("SELECT * FROM answers WHERE categoryid = " + categoryid + " ORDER BY RAND() LIMIT 3", function (err, rows) {
@@ -41,7 +43,7 @@ exports.get_question = function(req, body, callback) {
 				shuffleArray(results);
 
 				// We're passing the answerid for testing purposes
-				callback(null, { id: entry.id, answerid: answerid, answers: results });
+				callback(null, { id: entry.id, file: entry.file, answerid: answerid, answers: results });
 			});
 		});
 	});
