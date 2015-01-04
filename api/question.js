@@ -21,7 +21,7 @@ exports.get_answer = function(req, body, callback) {
 // Definitely needs some optimizations, i.e. not using ORDER BY RAND(),
 // and combining the queries into one or two. But it'll work for the testing phase.
 exports.get_question = function(req, body, callback) {
-	database.query("SELECT * FROM entries WHERE userid != " + (~~req.userobj.id) + " ORDER BY RAND() LIMIT 1", function (err, rows) {
+	database.query("SELECT * FROM entries WHERE userid != " + (~~req.userobj.id) + " AND id NOT IN(SELECT entry FROM seen WHERE userid = " + (~~req.userobj.id) + ") ORDER BY RAND() LIMIT 1", function (err, rows) {
 		if (err) return callback(err);
 
 		// No data meeting the criteria
@@ -59,6 +59,7 @@ exports.get_check = function(req, body, callback) {
 
 		callback(null, { correct: req.args[3] == rows[0].answerid });
 	});
+	addSeen(req.userobj.id, req.args[2]);
 }
 
 exports.post_upload = function(req, body, callback) {
@@ -75,6 +76,13 @@ exports.post_upload = function(req, body, callback) {
 
 function addQuestion(answerid, file, public, userid) {
 	database.query("INSERT INTO entries (answerid, file, userid) VALUES (" + answerid + ", '" + database.escape(file) + "', " + ~~userid + ")", function(err, rows) {
+		if (err)
+			console.log(err);
+	});
+}
+
+function addSeen(userid, entry) {
+	database.query("INSERT INTO seen (userid, entry) VALUES (" + ~~userid + ", " + entry + ")", function(err, rows) {
 		if (err)
 			console.log(err);
 	});
