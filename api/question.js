@@ -21,7 +21,7 @@ exports.get_answer = function(req, body, callback) {
 // Definitely needs some optimizations, i.e. not using ORDER BY RAND(),
 // and combining the queries into one or two. But it'll work for the testing phase.
 exports.get_question = function(req, body, callback) {
-	database.query("SELECT * FROM entries ORDER BY RAND() LIMIT 1", function (err, rows) {
+	database.query("SELECT * FROM entries WHERE userid != " + (~~req.userobj.id) + " ORDER BY RAND() LIMIT 1", function (err, rows) {
 		if (err) return callback(err);
 
 		var entry = rows[0];
@@ -35,7 +35,7 @@ exports.get_question = function(req, body, callback) {
 
 			var categoryid = ~~answer.categoryid;
 
-			database.query("SELECT * FROM answers WHERE categoryid = " + categoryid + " ORDER BY RAND() LIMIT 3", function (err, rows) {
+			database.query("SELECT * FROM answers WHERE categoryid = " + categoryid + " AND id != " + answerid + " ORDER BY RAND() LIMIT 3", function (err, rows) {
 				if (err) return callback(err);
 
 				var results = rows;
@@ -64,13 +64,13 @@ exports.post_upload = function(req, body, callback) {
 	upload.uploadFile(req, req.userobj.id, function(err, file) {
 		if (!file) return callback(null, file);
 
-		addQuestion(answerid, file, public);
+		addQuestion(answerid, file, public, req.userobj.id);
 		callback(null, { file: file });
 	});
 }
 
-function addQuestion(answerid, file, public) {
-	database.query("INSERT INTO entries (answerid, file) VALUES (" + answerid + ", '" + database.escape(file) + "')", function(err, rows) {
+function addQuestion(answerid, file, public, userid) {
+	database.query("INSERT INTO entries (answerid, file, userid) VALUES (" + answerid + ", '" + database.escape(file) + "', " + ~~userid + ")", function(err, rows) {
 		if (err)
 			console.log(err);
 	});
