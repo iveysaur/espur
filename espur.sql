@@ -27,7 +27,7 @@ CREATE TABLE `answers` (
   `categoryid` int(11) DEFAULT NULL,
   `answer` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -36,7 +36,7 @@ CREATE TABLE `answers` (
 
 LOCK TABLES `answers` WRITE;
 /*!40000 ALTER TABLE `answers` DISABLE KEYS */;
-INSERT INTO `answers` VALUES (1,1,'Spotting some choice booty'),(2,1,'Finding out you’re pregnant'),(3,1,'Seeing your crush'),(4,1,'Pumpkin Spice Latte is back'),(5,1,'Feeling gassy'),(6,2,'Seeing your arch enemy'),(7,2,'Pumpkin Spice is banned by the FTC'),(8,2,'Checking if you put on deodorant'),(9,2,'Miley Cyrus comes on the radio');
+INSERT INTO `answers` VALUES (1,1,'Spotting some choice booty'),(2,1,'Finding out you\'re pregnant'),(3,1,'Seeing your crush'),(4,1,'Pumpkin Spice Latte is back'),(5,1,'Feeling gassy'),(6,2,'Seeing your arch enemy'),(7,2,'Pumpkin Spice is banned by the FTC'),(8,2,'Checking if you put on deodorant'),(9,2,'Miley Cyrus comes on the radio'),(10,2,'Phone battery at 5%'),(11,2,'Getting Pepsi instead of Coke'),(12,1,'New iPhone released'),(13,1,'Being in love'),(14,2,'Realizing the cookies are actually raisin'),(15,2,'Complete Excitement'),(16,2,'Skydiving'),(17,3,'Stubbed your toe'),(18,3,'Just crashed your car'),(19,3,'Having to eat brussel sprouts'),(20,3,'Just dropped your phone screen-first'),(21,3,'Walking in on someone'),(22,3,'When you can\'t even'),(23,3,'Realizing there\'s still 30 minutes left in class'),(24,1,'Checking your privilege'),(25,2,'Smelling something really bad'),(26,3,'Having to hear your neighbor\'s music when you try to sleep');
 /*!40000 ALTER TABLE `answers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -53,7 +53,7 @@ CREATE TABLE `entries` (
   `file` varchar(255) DEFAULT NULL,
   `answerid` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -62,7 +62,6 @@ CREATE TABLE `entries` (
 
 LOCK TABLES `entries` WRITE;
 /*!40000 ALTER TABLE `entries` DISABLE KEYS */;
-INSERT INTO `entries` VALUES (1,NULL,'./images/1416868024766.jpg',2);
 /*!40000 ALTER TABLE `entries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -81,7 +80,7 @@ CREATE TABLE `users` (
   `ip` varchar(64) DEFAULT NULL,
   `authkey` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -90,6 +89,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (1,'joe','$2a$11$AFjpNijidzjVJPUUZp2Nr.64dQTmyuU.6DyzPMyh3peFXlSG2nAc.','jaxbot@gmail.com',NULL,'joe15dc94acececc944269fb582f1c5d73dc4a00245'),(2,'t','$2a$11$K2PRSnUHebbJxPvMQ/t1HOD3XXkSo3czZlb3Mo8AUuY0IJGLAmk4S','k',NULL,'teac07a7f4dd94618b3effa89d816f9ef198d9b8a'),(3,'u','$2a$11$y1y6XygYBV41VF7QvDbAL.d72XLflREFwPd34uIgDBvsB1s/LQJMm','e',NULL,'ubab3b51c069c00ae575634623dba1a46c88a56e8'),(4,'Jonathan','$2a$11$2iiHNZ9yTKR0EXOutQBWnuls0WIWJkET8PHtXANFOgjyBKGfmRde6','test',NULL,'Jonathandac4c7aa6e955292e39b64215d3007d46953df70'),(5,'ivey','$2a$11$Ex4NZLIzfxFe2QHy.U4/aOE23vFfwNityXAPrXa4aC9rgrztfdKlq','iveysaurrr@gmail.com',NULL,'iveyb84f1dd14f8fa37b753606be74bf8d2ef999fe5a');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -102,4 +102,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-12-06 21:21:38
+-- Dump completed on 2015-01-03 22:07:51

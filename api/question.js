@@ -8,17 +8,25 @@ database.query("SELECT COUNT(DISTINCT categoryid) FROM answers", function(err, r
 	numCategories = rows[0]["COUNT(DISTINCT categoryid)"] - 1;
 });
 
-exports.get_answer = function(request, response, args, body, callback) {
+exports.get_answer = function(req, body, callback) {
 	var rnd = Math.round(Math.random() * numCategories) + 1;
-	database.query("SELECT * FROM answers WHERE categoryid = " + rnd + " ORDER BY RAND() LIMIT 1", callback);
+	database.query("SELECT * FROM answers WHERE categoryid = " + rnd + " ORDER BY RAND() LIMIT 1", function(err, rows) {
+		if (err) return callback(err, { status: 500 });
+
+		callback(null, rows[0]);
+	});
 }
 
 // Rapid prototype
 // Definitely needs some optimizations, i.e. not using ORDER BY RAND(),
 // and combining the queries into one or two. But it'll work for the testing phase.
-exports.get_question = function(request, response, args, body, callback) {
-	database.query("SELECT * FROM entries ORDER BY RAND() LIMIT 1", function (err, rows) {
+exports.get_question = function(req, body, callback) {
+	database.query("SELECT * FROM entries WHERE userid != " + (~~req.userobj.id) + " ORDER BY RAND() LIMIT 1", function (err, rows) {
 		if (err) return callback(err);
+
+		// No data meeting the criteria
+		if (rows.length < 1)
+			return callback(null, { id: -1 });
 
 		var entry = rows[0];
 		var answerid = ~~entry.answerid;
@@ -27,35 +35,46 @@ exports.get_question = function(request, response, args, body, callback) {
 			if (err) return callback(err);
 
 			var answer = rows[0];
+			if (!answer) return callback(500);
+
 			var categoryid = ~~answer.categoryid;
 
-			database.query("SELECT * FROM answers WHERE categoryid = " + categoryid + " ORDER BY RAND() LIMIT 3", function (err, rows) {
+			database.query("SELECT * FROM answers WHERE categoryid = " + categoryid + " AND id != " + answerid + " ORDER BY RAND() LIMIT 3", function (err, rows) {
 				if (err) return callback(err);
 
 				var results = rows;
 				results.push(answer);
 				shuffleArray(results);
 
-				callback(null, { id: entry.id, answers: results });
+				// We're passing the answerid for testing purposes
+				callback(null, { id: entry.id, file: entry.file, answerid: answerid, answers: results });
 			});
 		});
 	});
 }
 
-exports.post_upload = function(request, response, args, body, callback) {
-	var answerid = ~~args[2];
-	var public = ~~args[3];
+exports.get_check = function(req, body, callback) {
+	database.query("SELECT * FROM entries WHERE id = " + ~~req.args[2], function(err, rows) {
+		if (err) return callback(err, { status: 500 });
 
-	upload.uploadFile(body, function(err, file) {
-		if (!file) return callback(null, file);
-
-		addQuestion(answerid, file, public);
-		callback(null, file);
+		callback(null, { correct: req.args[3] == rows[0].answerid });
 	});
 }
 
-function addQuestion(answerid, file, public) {
-	database.query("INSERT INTO entries (answerid, file) VALUES (" + answerid + ", '" + database.escape(file) + "')", function(err, rows) {
+exports.post_upload = function(req, body, callback) {
+	var answerid = ~~req.args[2];
+	var public = ~~req.args[3];
+
+	upload.uploadFile(req, req.userobj.id, function(err, file) {
+		if (!file) return callback(null, file);
+
+		addQuestion(answerid, file, public, req.userobj.id);
+		callback(null, { file: file });
+	});
+}
+
+function addQuestion(answerid, file, public, userid) {
+	database.query("INSERT INTO entries (answerid, file, userid) VALUES (" + answerid + ", '" + database.escape(file) + "', " + ~~userid + ")", function(err, rows) {
 		if (err)
 			console.log(err);
 	});

@@ -17,14 +17,7 @@ function handler (req, res) {
 		return index(res);
 	}
 
-	var body = '';
-	req.on('data', function (data) {
-		body += data.toString();
-		if (body.length > 1024*1024) {
-			req.connection.destroy();
-		}
-	});
-	req.on('end', function () {
+	var runApi = function () {
 		try {
 			api(req, res, body);
 		} catch (e) {
@@ -34,6 +27,20 @@ function handler (req, res) {
 			res.writeHead(500);
 			res.end();
 		}
-	});
+	}
+
+	var body = '';
+	if (path.indexOf("upload") !== -1) {
+		req.pause();
+		runApi();
+	} else {
+		req.on('data', function (data) {
+			body += data.toString();
+			if (body.length > 1024*1024) {
+				req.connection.destroy();
+			}
+		});
+		req.on('end', runApi);
+	}
 }
 

@@ -1,12 +1,37 @@
 var fs = require("fs");
+var spawn = require("child_process").spawn;
 
-exports.uploadFile = function (data, callback) {
-	var tmpfile = "./images/" + (new Date).getTime() + ".jpg";
+var id = (new Date).getTime().toString(36) + "-";
+var increment = 0;
 
-	fs.writeFile(tmpfile, data, "base64", function(err) {
-		data = null;
+exports.uploadFile = function (data, userid, callback) {
+	var imgid = getUniqueId(userid);
+	var tmpfile = "./images/" + imgid + ".jpg";
 
-		if (err) callback(err);
-		callback(null, tmpfile);
+	var stream = fs.createWriteStream(tmpfile);
+	data.resume();
+	data.pipe(stream);
+	stream.on('finish', function() {
+		var process = spawn("convert", [tmpfile,
+							"-resize",
+							"500x500>^",
+							"-rotate",
+							"270",
+							"-auto-orient",
+							"-strip",
+							tmpfile
+		]);
+		process.stderr.on("data", function(data) {
+			console.log("UploadErr: " + data);
+		});
+		process.on("close", function(code) {
+			callback(code);
+		});
+		callback(null, imgid);
 	});
 }
+
+function getUniqueId(userid) {
+	return userid + "-" + id + (increment++) + "-" + Math.random().toString(36);
+}
+
