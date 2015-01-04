@@ -26,6 +26,7 @@ exports.public_post_create = function(req, body, callback) {
 
 exports.public_post_login = function(req, body, callback) {
 	database.query("SELECT id,password,authkey FROM users WHERE username = '" + database.escape(body.username) + "'", function(err, rows) {
+		if (!rows[0] || !rows[0].password) return callback(null, { status: false });
 		bcrypt.compare(body.password, rows[0].password, function(err,match) {
 			if (err || !match)
 				return callback(null, { status: false });
