@@ -10,8 +10,9 @@ database.query("SELECT COUNT(DISTINCT categoryid) FROM answers", function(err, r
 
 exports.get_answer = function(req, body, callback) {
 	var rnd = Math.round(Math.random() * numCategories) + 1;
-	database.query("SELECT * FROM answers WHERE categoryid = " + rnd + " ORDER BY RAND() LIMIT 1", function(err, rows) {
+	database.query("SELECT * FROM answers WHERE categoryid = " + rnd + " AND id NOT IN(SELECT answerid FROM entries WHERE userid = " + (~~req.userobj.id) + ") ORDER BY RAND() LIMIT 1", function(err, rows) {
 		if (err) return callback(err, { status: 500 });
+		if (rows.length < 1) callback(null, { id: -1 });
 
 		callback(null, rows[0]);
 	});
