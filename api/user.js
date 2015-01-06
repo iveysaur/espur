@@ -39,3 +39,10 @@ exports.public_post_login = function(req, body, callback) {
 	});
 }
 
+exports.post_feedback = function(req, body, callback) {
+	database.query("INSERT INTO feedback (userid, feedback) VALUES (" + ~~req.userobj.id + ",'" + database.escape(body.feedback) + "')", function(err, rows) {
+		if (err) return callback(null, { status: false });
+		callback(null, { status: true });
+	});
+}
+
