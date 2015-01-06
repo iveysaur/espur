@@ -53,7 +53,7 @@ CREATE TABLE `entries` (
   `file` varchar(255) DEFAULT NULL,
   `answerid` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=111 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -63,6 +63,30 @@ CREATE TABLE `entries` (
 LOCK TABLES `entries` WRITE;
 /*!40000 ALTER TABLE `entries` DISABLE KEYS */;
 /*!40000 ALTER TABLE `entries` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `seen`
+--
+
+DROP TABLE IF EXISTS `seen`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `seen` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `userid` int(11) DEFAULT NULL,
+  `entry` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `seen`
+--
+
+LOCK TABLES `seen` WRITE;
+/*!40000 ALTER TABLE `seen` DISABLE KEYS */;
+/*!40000 ALTER TABLE `seen` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -80,7 +104,7 @@ CREATE TABLE `users` (
   `ip` varchar(64) DEFAULT NULL,
   `authkey` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -89,7 +113,6 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'joe','$2a$11$AFjpNijidzjVJPUUZp2Nr.64dQTmyuU.6DyzPMyh3peFXlSG2nAc.','jaxbot@gmail.com',NULL,'joe15dc94acececc944269fb582f1c5d73dc4a00245'),(2,'t','$2a$11$K2PRSnUHebbJxPvMQ/t1HOD3XXkSo3czZlb3Mo8AUuY0IJGLAmk4S','k',NULL,'teac07a7f4dd94618b3effa89d816f9ef198d9b8a'),(3,'u','$2a$11$y1y6XygYBV41VF7QvDbAL.d72XLflREFwPd34uIgDBvsB1s/LQJMm','e',NULL,'ubab3b51c069c00ae575634623dba1a46c88a56e8'),(4,'Jonathan','$2a$11$2iiHNZ9yTKR0EXOutQBWnuls0WIWJkET8PHtXANFOgjyBKGfmRde6','test',NULL,'Jonathandac4c7aa6e955292e39b64215d3007d46953df70'),(5,'ivey','$2a$11$Ex4NZLIzfxFe2QHy.U4/aOE23vFfwNityXAPrXa4aC9rgrztfdKlq','iveysaurrr@gmail.com',NULL,'iveyb84f1dd14f8fa37b753606be74bf8d2ef999fe5a');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -102,4 +125,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-01-03 22:07:51
+-- Dump completed on 2015-01-05 21:59:12
